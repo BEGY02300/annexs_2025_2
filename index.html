@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/x-icon" href="langfr-250px-La_Poste_2022.icon">
+  <title>Annexes 2025</title>
+  <style>
+    :root{--bg:#0b0f1a;--card:#1b2230;--accent:#6c5ce7;--muted:#9aa6bf}
+    body {
+      margin: 0;
+      font-family: Inter, Arial, sans-serif;
+      background: var(--bg);
+      color: #fff;
+      overflow: hidden;
+      -webkit-font-smoothing:antialiased;
+    }
+
+    .slide-container {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .slide {
+      width: 92%;
+      height: 82%;
+      background: linear-gradient(180deg, var(--card), rgba(255,255,255,0.02));
+      border-radius: 16px;
+      padding: 28px;
+      /* espace en bas pour éviter que les contrôles ne couvrent le contenu */
+      padding-bottom: 110px;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      box-shadow: 0 18px 50px rgba(2,6,23,0.6);
+      transition: transform 600ms cubic-bezier(.2,.9,.3,1), opacity 420ms;
+      position: relative;
+      transform: translateX(40px) scale(0.99);
+      opacity: 0;
+      max-height: calc(100vh - 72px);
+      overflow: auto;
+      /* hide native scrollbars but keep scrolling capability */
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE 10+ */
+    }
+
+    /* hide webkit scrollbars */
+    .slide::-webkit-scrollbar { width: 0; height: 0; display: none; }
+
+    .slide.active {
+      display: flex;
+      transform: translateX(0) scale(1);
+      opacity: 1;
+    }
+
+    .slide h1 {font-size:36px;margin:10px 0}
+    .slide p {color:var(--muted);max-width:900px}
+    .slide .guide-list { text-align:left; max-width:900px; margin:10px auto; color:var(--muted); }
+    .slide .guide-list li { margin-bottom:8px; }
+
+    .slide .fake-img {
+      width: 70%;
+      height: 40vh;
+      border-radius: 12px;
+      background: linear-gradient(135deg,#2a3346,#1e2736);
+      display:flex;align-items:center;justify-content:center;margin-bottom:18px;
+      color:var(--muted);font-size:20px;border:1px solid rgba(255,255,255,0.02)
+    }
+
+    /* Images dans les slides : arrondies et responsive */
+    .slide img,
+    .slide .slide-img {
+      /* Responsive sizing: grows with viewport but constrained */
+      width: clamp(280px, 65vw, 1200px);
+      max-width: 100%;
+      height: auto;
+      max-height: 70vh;
+      border-radius: 12px;
+      object-fit: cover;
+      display: block;
+      margin-bottom: 18px;
+      border: 1px solid rgba(255,255,255,0.04);
+      box-shadow: 0 8px 22px rgba(2,6,23,0.25);
+      transition: transform 300ms cubic-bezier(.2,.9,.3,1), box-shadow 300ms;
+      transform-origin: center center;
+      will-change: transform;
+      cursor: zoom-in;
+      max-width: 95vw;
+    }
+
+     /* For slide 2: ensure the full image fits inside the slide (no crop, no scroll)
+       and match visual style (rounded corners + shadow) */
+    .slide[data-index="1"] .slide-img {
+      object-fit: contain;
+      width: clamp(220px, 75vw, 1100px);
+      max-height: calc(70vh - 20px);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.04);
+      box-shadow: 0 8px 22px rgba(2,6,23,0.25);
+      display: block;
+      margin-bottom: 18px;
+    }
+
+    /* For slide 4 (data-index="3"): show full image dezoomed (contain) like slide 2 */
+    .slide[data-index="3"] .slide-img {
+      object-fit: contain;
+      width: clamp(220px, 75vw, 1100px);
+      max-height: calc(70vh - 20px);
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.04);
+      box-shadow: 0 8px 22px rgba(2,6,23,0.25);
+      display: block;
+      margin-bottom: 18px;
+      cursor: default;
+    }
+
+    /* Slide 5 (data-index="4"): arrondi augmenté pour l'image */
+    .slide[data-index="4"] .slide-img {
+      object-fit: contain;
+      width: clamp(220px, 75vw, 1100px);
+      max-height: calc(70vh - 20px);
+      border-radius: 28px !important;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.04);
+      box-shadow: 0 8px 22px rgba(2,6,23,0.25);
+      display: block;
+      margin-bottom: 18px;
+      cursor: default;
+    }
+
+    .slide[data-index="5"] .slide-img {
+     width: 100%;             /* occupe tout le conteneur */
+     height: auto;            /* garde les proportions */
+     border-radius: 12px;     /* coins arrondis */
+     object-fit: cover;       /* image bien cadrée, remplissant le conteneur */
+     box-shadow: 0 10px 20px rgba(0,0,0,0.2); /* optionnel : ombre pour effet carte */
+      display: block;
+    }
+
+
+
+    /* Gallery layout for slide 2: show up to 6 images responsive */
+    .gallery {
+      width: 100%;
+      max-width: 1100px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 12px;
+      align-items: stretch;
+      margin: 8px 0 18px;
+    }
+    .gallery img {
+      width: 100%;
+      height: clamp(96px, 20vh, 220px);
+      object-fit: cover;
+      border-radius: 10px;
+      display: block;
+      box-shadow: 0 8px 22px rgba(2,6,23,0.25);
+      transition: transform 220ms ease, box-shadow 220ms ease;
+      cursor: zoom-in;
+    }
+    .gallery img:hover { transform: scale(1.04); box-shadow: 0 18px 44px rgba(2,6,23,0.45); }
+    /* when image is centered in viewport (re-uses fullscreen-fit styles) */
+    .gallery img.fullscreen-fit { cursor: zoom-out; }
+
+    /* For the horaires slide (index 2) show images stacked vertically, not side-by-side */
+    .slide[data-index="2"] .gallery {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      align-items: center;
+      max-height: calc(70vh - 120px);
+      overflow-y: auto;
+      padding-right: 6px; /* leave room for hidden scrollbar area */
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE 10+ */
+    }
+    .slide[data-index="2"] .gallery::-webkit-scrollbar { width: 0; height: 0; display: none; }
+    .slide[data-index="2"] .gallery img {
+      width: clamp(360px, 86vw, 920px);
+      height: auto;
+      object-fit: contain;
+      border-radius: 12px;
+    }
+
+    /* Big floating scroll button for slide 3 */
+    .slide[data-index="2"] .big-scroll {
+      position: absolute;
+      right: 28px;
+      bottom: 120px;
+      width: 56px;
+      height: 56px;
+      border-radius: 999px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 12px 28px rgba(12,8,40,0.45);
+      cursor: pointer;
+      z-index: 120;
+    }
+    .slide[data-index="2"] .big-scroll:active { transform: translateY(1px); }
+
+    /* When a gallery image is centered, hide other thumbnails visually (keep centered image visible) */
+    .gallery.hidden img:not(.fullscreen-fit) {
+      opacity: 0.06;
+      transform: scale(0.94);
+      pointer-events: none;
+      filter: blur(2px);
+    }
+
+    /* Lightbox overlay for viewing one image at a time with navigation */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(2,6,23,0.75);
+      z-index: 500;
+      padding: 24px;
+    }
+    .lightbox.show { display: flex; }
+    .lightbox .frame {
+      position: relative;
+      max-width: 95vw;
+      max-height: 95vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .lightbox img { max-width: 100%; max-height: 100%; border-radius: 12px; box-shadow: 0 40px 80px rgba(2,6,23,0.85); }
+    .lightbox .nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #fff;
+      font-size: 28px;
+      background: rgba(0,0,0,0.2);
+      border: none;
+      width: 48px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .lightbox .nav.prev { left: -70px; }
+    .lightbox .nav.next { right: -70px; }
+    .lightbox .close-lightbox { position: absolute; top: -12px; right: -12px; background: rgba(0,0,0,0.3); border: none; color: #fff; font-size: 22px; width:36px;height:36px;border-radius:18px;cursor:pointer }
+
+    /* Hover / focus / zoomed state */
+    .slide img:hover,
+    .slide .slide-img:hover,
+    .slide img:focus,
+    .slide .slide-img:focus {
+      transform: scale(1.04);
+      box-shadow: 0 18px 44px rgba(2,6,23,0.45);
+      outline: none;
+    }
+
+    .slide img.zoomed,
+    .slide .slide-img.zoomed {
+      /* modest zoom; on small screens we keep it within viewport */
+      transform: scale(1.18) !important;
+      z-index: 120;
+      position: relative;
+      cursor: zoom-out;
+      box-shadow: 0 28px 64px rgba(2,6,23,0.6);
+    }
+
+    /* Fullscreen-fit mode (used for slide 2): center image and fit viewport without scrollbars) */
+    .slide img.fullscreen-fit,
+    .slide .slide-img.fullscreen-fit {
+      position: fixed !important;
+      top: 50% !important;
+      left: 50% !important;
+      transform: translate(-50%, -50%) !important;
+      width: auto !important;
+      height: auto !important;
+      max-width: 95vw !important;
+      max-height: 95vh !important;
+      object-fit: contain !important;
+      border-radius: 12px !important;
+      z-index: 300 !important;
+      box-shadow: 0 40px 80px rgba(2,6,23,0.75) !important;
+      cursor: zoom-out !important;
+      /* prevent hover/scale when in fullscreen-fit */
+      pointer-events: auto;
+    }
+    .slide img.fullscreen-fit:hover,
+    .slide .slide-img.fullscreen-fit:hover {
+      transform: translate(-50%, -50%) !important;
+      box-shadow: 0 40px 80px rgba(2,6,23,0.75) !important;
+    }
+
+    /* Toolbar for image actions (download / copy) */
+    .img-toolbar {
+      position: absolute;
+      display: flex;
+      gap: 8px;
+      background: rgba(11,15,26,0.92);
+      padding: 8px;
+      border-radius: 10px;
+      box-shadow: 0 12px 30px rgba(2,6,23,0.6);
+      z-index: 220;
+      transform-origin: top left;
+      transition: opacity 180ms ease, transform 180ms ease;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .img-toolbar.show { opacity: 1; pointer-events: auto; }
+    .img-toolbar button {
+      background: transparent;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 6px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    .img-toolbar button:active { transform: translateY(1px); }
+
+    /* Description panels (left and right) */
+    .img-desc-left, .img-desc-right {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      width: clamp(200px, 24vw, 380px);
+      max-height: 84vh;
+      overflow-y: auto;
+      overflow-x: hidden;
+      background: rgba(14,18,28,0.96);
+      color: var(--muted);
+      padding: 14px;
+      border-radius: 12px;
+      z-index: 310;
+      box-shadow: 0 18px 40px rgba(2,6,23,0.6);
+      display: none;
+      font-size: 14px;
+      line-height: 1.45;
+      box-sizing: border-box;
+      word-break: break-word;
+      /* hide native scrollbars visually but keep scrolling */
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE 10+ */
+      padding-right: 12px; /* avoid text under scrollbar area */
+    }
+
+    /* hide webkit scrollbars for description panels */
+    .img-desc-left::-webkit-scrollbar, .img-desc-right::-webkit-scrollbar { width: 0; height: 0; display: none; }
+    .img-desc-left { left: 12px; }
+    .img-desc-right { right: 12px; }
+    .img-desc-left.show, .img-desc-right.show { display: block; }
+    .img-desc-left .title, .img-desc-right .title { color: #fff; font-weight:600; margin-bottom:8px; }
+    .img-desc-left .close-desc, .img-desc-right .close-desc { position: absolute; top: 8px; right: 8px; background:transparent; border:none; color:#fff; font-size:18px; cursor:pointer; }
+
+    .controls {
+      position: absolute;
+      bottom: 26px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 12px;
+      z-index: 40;
+    }
+
+    /* Toggle UI: when active, hide non-image chrome to reveal images */
+    .ui-hidden .pager,
+    .ui-hidden .controls,
+    .ui-hidden .img-desc-left,
+    .ui-hidden .img-desc-right,
+    .ui-hidden .img-toolbar,
+    .ui-hidden .big-scroll {
+      display: none !important;
+    }
+
+    button {
+      padding: 10px 16px;
+      background: var(--accent);
+      border: none;
+      color: white;
+      font-size:16px;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow:0 8px 22px rgba(108,92,231,0.16);
+    }
+    button.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04)}
+
+    .pager{position:absolute;top:18px;right:22px;color:var(--muted)}
+
+    @media (max-width:720px){
+      .slide h1{font-size:26px}
+      .slide .fake-img{width:92%;height:36vh}
+      .slide img, .slide .slide-img{width:92%;max-height:36vh}
+    }
+    /* Additional responsive adjustments for tablets and phones */
+    @media (max-width:1024px) {
+      .slide { width: min(96%, 1000px); max-height: calc(100vh - 120px); padding: clamp(16px, 2.5vw, 24px); }
+      .slide .fake-img, .slide img, .slide .slide-img { width: 86%; max-height: 48vh; }
+      .pager { top: 12px; right: 14px; }
+      .controls { bottom: 18px; }
+    }
+
+    @media (max-width:720px) {
+      body { overflow: auto; }
+      .slide { height: auto; width: 96%; padding: 16px; padding-bottom: 72px; border-radius: 12px; }
+      .slide h1 { font-size: clamp(20px, 4.5vw, 26px); }
+      .slide p { max-width: 92%; font-size: 15px; }
+      .slide .fake-img, .slide img, .slide .slide-img { width: 92%; max-height: 36vh; }
+      .controls { position: fixed; bottom: 12px; left: 50%; transform: translateX(-50%); gap: 8px; z-index: 80; }
+      button { padding: 8px 12px; font-size: 14px; border-radius: 8px; }
+      .pager { top: 10px; right: 12px; }
+    }
+
+    @media (max-width:420px) {
+      .controls { flex-direction: column; gap: 6px; }
+      .slide .fake-img, .slide img, .slide .slide-img { max-height: 32vh; }
+      .slide { padding-bottom: 64px; }
+      .slide h1 { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+
+    <div class="slide-container">
+    <div id="slides">
+      <section class="slide help active" data-index="help">
+        <h1>Guide : boutons et interactions</h1>
+        <p class="guide-desc">Cette courte page explique le rôle des boutons et commandes présents dans la présentation.</p>
+        <ul class="guide-list">
+          <li><strong>◀ Précédent</strong> : revient à la diapositive précédente.</li>
+          <li><strong>Suivant ▶</strong> : avance à la diapositive suivante.</li>
+          <li><strong>Plein écran</strong> : active/désactive le mode plein écran du navigateur.</li>
+          <li><strong>Clique sur une image</strong> : zoom léger. Une seconde action ferme le zoom.</li>
+          <li><strong>Télécharger / Copier</strong> (barre d'outils) : télécharge ou copie l'image affichée.</li>
+          <li><strong>Galerie (slide Horaires)</strong> : clique pour centrer une image ; appuie de nouveau pour quitter.</li>
+          <li><strong>Bouton ⬇ / ⬆</strong> : défile la galerie d'horaires vers le bas/haut.</li>
+          <li><strong>Touche Échap</strong> : ferme tout zoom ou panneau ouvert.</li>
+        </ul>
+        <p style="color:var(--muted); margin-top:8px;">Cliquez sur <strong>Suivant ▶</strong> pour commencer la présentation.</p>
+      </section>
+      <section class="slide active" data-index="0">
+        <img class="slide-img" tabindex="0" src="La_poste.png" alt="Visuel : La Poste">
+          <h1>Où est La Poste&nbsp;?</h1>
+          <p>La Poste se situe au 200 rue du Champ Macret à Roye.</p>
+      </section>
+      <section class="slide" data-index="1" data-desc-left="Le plus important c'est de le lire" data-desc-right="<p>Les 19 règles d'OR de la Santé Sécurité au Travail</p> <p>Avant d'appliquer ces 19 règles d'or, assurez-vous d'être en alerte constante en cas d'identification d'une situation de danger.</p> <p>1. Je ne suis pas sous l'emprise de substances alcooliques ou stupéfiantes.</p> <p>2. Je gare mon véhicule en marche arrière.</p> <p>3. Je dépose mes effets personnels au vestiaire ou dans les casiers relais.</p> <p>4. Je porte les EPI obligatoires sur chaque poste de travail. Pour le travail sur machines, pas de vêtements amples, cheveux attachés ou tout autre chose qui pourrait se prendre dans une poulie en fonctionnement...</p> <p>5. En dehors des temps de pause, je n'utilise pas de smartphone ou de téléphone personnel (sauf en cas d'urgence), d'écouteur, d'appareil audio.</p> <p>6. Je travaille dans le respect des autres, avec courtoisie, politesse et sans discrimination.</p> <p>7. Je respecte les consignes de sécurité décrites dans les standards au poste (ex : port de gants, tenue adaptée...).</p> <p>8. Je suis vigilant lors de mes déplacements.</p> <p>9. Je respecte les règles de circulation, les zones de stockage et les zones de rangement.</p> <p>10. Je n'utilise pas de matériel défectueux : je l'isole et le signale.</p> <p>11. Je respecte les règles de manutention des matériels roulants : 1 chariot à la fois, par la barre de saisie, en le poussant et sans le lancer.</p> <p>12. Je porte à 2 mains 1 seul contenant à la fois.</p> <p>13. Je ne laisse pas de liens ou de déchets au sol, et de contenants (keg, bak...).</p> <p>14. Je veille à ce que l'accès aux issues de secours et aux extincteurs soit toujours dégagé.</p> <p>15. En fin de vacation, je m'assure que mon poste de travail est propre et rangé.</p> <p>16. Je respecte le code de la route : port obligatoire de la ceinture de sécurité, respect des distances de sécurité et adaptation de la vitesse aux conditions climatiques.</p> <p>17. Je fais en sorte de maîtriser ma marche arrière et je m'assure que le frein de parking du véhicule est bien serré, lorsque je m'apprête à stationner mon véhicule.</p> <p>18. Je respecte les règles de manutention des colis et contenants qui sont les mêmes que chez le client et au sein de la PIC.</p> <p>19. Je n'utilise pas mon smartphone lorsque je suis au volant.</p>">
+        <img class="slide-img" tabindex="0" src="Les_19_regles_d_or.jpg" alt="Visuel : La Poste">
+        <h1>Les 19 règles d'or</h1>
+        <p>Elles permettent le bon fonctionnement de l'entreprise.</p>
+      </section>
+      <section class="slide" data-index="2" data-desc-left="Horaires - Informations" data-desc-right="<p>Horaires collectifs pour l'entrepôt. Vérifie les tournées et les pauses sur ton planning.</p><p>Contact RH pour les demandes de modification.</p>">
+        <h1>Horaires collectifs Entrepôt LOG’ISSIMO ROYE</h1>
+        <div class="gallery">
+          <img tabindex="0" src="6_13_horaire.png" alt="Horaire 6:13">
+          <img tabindex="0" src="6_14,45_horaire.png" alt="Horaire 6:14,45">
+          <img tabindex="0" src="8,15_12,15_et_13,15_16,15_horaire.png" alt="Horaire 8:15-16:15">
+          <img tabindex="0" src="9,30_13,15_et_14,15_17,30_horaire.png" alt="Horaire 9:30-17:30">
+          <img tabindex="0" src="13_20_horaire.png" alt="Horaire 13:20">
+          <img tabindex="0" src="15,24_23_horaire.png" alt="Horaire 15:24-23:00">
+        </div>
+            <button class="big-scroll" aria-label="Descendre">⬇</button>
+      </section>
+      <section class="slide" data-index="3" >
+        <img class="slide-img" tabindex="0" src="IMG_20251117_110343.jpg" alt="Visuel : La Poste">
+        <h1>Le plan de La Poste</h1>
+        <p>Permet de situer chaque emplacement.</p>
+      </section>
+      <section class="slide" data-index="4"  data-desc-right="Avec ses collaborateurs, La Poste travaille avec de nombreuses entreprises pour assurer le bon fonctionnement de son service de livraison. Voici les principaux partenaires avec lesquels elle collabore : la DT, la DSEM, la LPM et l’UGAP. Ces entreprises fournissent des services essentiels tels que la logistique, la gestion des infrastructures, la maintenance des équipements et l'approvisionnement en matériel. Grâce à ces collaborations, La Poste peut garantir une livraison efficace et fiable de ses services à travers le pays.">
+        <img class="slide-img" tabindex="0" src="IMG_20251117_110448.jpg" alt="Visuel : La Poste">
+        <h1>Ce sont les principaux clients avec lesquels La Poste travaille.</h1>
+      </section>
+      <section class="slide active" data-index="3" data-desc-right="<p>Cette zone est un espace de recharge pour transpalettes électriques utilisés dans un entrepôt.</p> <p>Les machines jaunes (de marque Jungheinrich) servent à déplacer des palettes et des charges lourdes dans les allées.</p> <p>Elles fonctionnent avec des batteries, et lorsqu’elles ne sont pas utilisées, elles sont garées ici pour être rechargées grâce aux bornes fixées sur les poteaux jaunes.</p> <p>Cet espace permet de garder l’entrepôt organisé, sécurisé et d’assurer que les chariots soient toujours prêts à l’emploi.</p>">
+        <img class="slide-img" tabindex="0" src="IMG_20251117_105932.jpg" alt="Visuel : La Poste">
+        <h1>Qu'est-ce&nbsp;?</h1>
+        <p>Ce sont des transpalettes.</p>
+      </section>
+      <section class="slide" data-index="0" data-desc-right="<p>Il s'agit d'un espace de travail ou d'entrepôt équipé d'un système d'affichage pour la gestion des stocks et des retours.</p><p>On peut voir un panneau rouge avec le mot RETOUR indiquant la zone dédiée aux marchandises à retourner, ainsi qu un panneau vert avec EN STOCK signalant les articles disponibles en stock.</p><p>Un tableau blanc fixé en hauteur porte le titre RETOUR et présente un schéma d organisation de l entrepôt avec différentes zones colorées incluant des sections comme SKI et MOBILITE DIGITAL.</p><p>L'environnement comprend une structure métallique avec grillage de sécurité typique d'un entrepôt, des palettes et cartons visibles au sol, une chaise de bureau et un éclairage industriel.</p><p>Ce système d'affichage permet aux employés de l'entrepôt de repérer rapidement les zones de stockage et de traiter efficacement les retours de marchandises.</p>" >
+        <img class="slide-img" tabindex="0" src="IMG_20251117_104804.jpg" alt="Visuel : La Poste">
+        <h1>Qu'est-ce&nbsp;?</h1>
+        <p>Chaque pièce, objet ou autre ira à l'endroit indiqué.</p>
+      </section>
+      <section class="slide" data-index="4" data-desc-right="Ce-ci sert a mettre les pallette en attent ou en stockage temporaire avant d'être déplacé vers une autre zone de l'entrepôt ou expédié.">
+        <img class="slide-img" tabindex="0" src="IMG_20251117_104014.jpg" alt="Visuel : La Poste">
+        <h1>Les racks</h1>
+        <p>Ce sont des racks de palettes.</p>
+      </section>
+      <section class="slide" data-index="4" data-desc-right="<p>Cette image montre une caisse automatique ou un système de point de vente dans ce qui semble être un magasin.</p><p>On peut voir une signalétique MODULA LIFT (qui est une marque de systèmes de stockage automatisés), une caméra de surveillance au plafond, des pictogrammes de sécurité/interdiction sur le mur, et un espace de caisse assez épuré et moderne.</p><p>Il s'agit probablement d'une zone de self-checkout (caisse automatique) ou d'une caisse traditionnelle dans un environnement commercial ou peut-être un entrepôt équipé de systèmes Modula.</p>">
+        <img class="slide-img" tabindex="0" src="IMG_20251117_103857.jpg" alt="Visuel : La Poste">
+        <h1>Qu'es</h1>
+        <p>C'est un modula lift</p>
+      </section>
+    </div>
+
+    <div class="pager" id="pager">1 / 3</div>
+
+    <div class="controls">
+      <button id="prev">◀ Précédent</button>
+      <button id="next">Suivant ▶</button>
+      <button id="fullscreen" class="ghost">Plein écran</button>
+    </div>
+  </div>
+
+<script>
+  // Simple, robust navigation for static slides
+  (function(){
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    let index = slides.findIndex(s=>s.classList.contains('active'));
+    if(index === -1) index = 0;
+
+    const pager = document.getElementById('pager');
+    function updatePager(){ pager.textContent = (index+1) + ' / ' + slides.length; }
+
+    function showSlide(i){
+      slides.forEach((s,idx)=>{
+        s.classList.toggle('active', idx===i);
+      });
+      index = i;
+      updatePager();
+    }
+
+    function nextSlide(){ if(slides.length===0) return; showSlide((index+1)%slides.length); }
+    function prevSlide(){ if(slides.length===0) return; showSlide((index-1+slides.length)%slides.length); }
+
+    document.getElementById('next').addEventListener('click', nextSlide);
+    document.getElementById('prev').addEventListener('click', prevSlide);
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 'ArrowRight' || e.key === 'PageDown') { nextSlide(); }
+      if(e.key === 'ArrowLeft' || e.key === 'PageUp') { prevSlide(); }
+      if(e.key === 'f' || (e.key === 'F' && e.ctrlKey)) { toggleFull(); }
+    });
+
+    // Fullscreen toggle
+    const fsBtn = document.getElementById('fullscreen');
+    function toggleFull(){
+      if(!document.fullscreenElement){
+        document.documentElement.requestFullscreen().catch(()=>{});
+      } else {
+        document.exitFullscreen().catch(()=>{});
+      }
+    }
+    fsBtn.addEventListener('click', toggleFull);
+
+    // Expose functions for buttons in case inline onclicks are used elsewhere
+    window.nextSlide = nextSlide;
+    window.prevSlide = prevSlide;
+
+    // Initialize pager
+    updatePager();
+
+    // UI toggle removed (button deleted); gallery thumbnails still toggle `ui-hidden` class directly.
+
+    // Zoom interactions + image toolbar: click/touch toggles zoom, keyboard (Enter/Space) toggles, Esc to close
+    const zoomImgs = Array.from(document.querySelectorAll('.slide img, .slide .slide-img'));
+
+    // Create a single toolbar element we reuse
+    const toolbar = document.createElement('div');
+    toolbar.className = 'img-toolbar';
+    toolbar.innerHTML = `<button id="download-img">Télécharger</button><button id="copy-img">Copier</button>`;
+    document.body.appendChild(toolbar);
+
+    function showToolbarFor(img) {
+      const rect = img.getBoundingClientRect();
+      const slideIndex = img.closest('.slide')?.dataset?.index;
+      // If image is in slide 2 or slide 4 (dezoom) or in fullscreen-fit mode, show toolbar at viewport top-right
+      if (slideIndex === '1' || slideIndex === '3' || img.classList.contains('fullscreen-fit')) {
+        const top = window.scrollY + 12;
+        const left = window.scrollX + window.innerWidth - toolbar.offsetWidth - 12;
+        toolbar.style.top = top + 'px';
+        toolbar.style.left = left + 'px';
+        toolbar.classList.add('show');
+        return;
+      }
+      const top = window.scrollY + rect.top - 10; // slightly above
+      const preferredLeft = window.scrollX + rect.right - toolbar.offsetWidth;
+      const altLeft = window.scrollX + rect.left;
+      toolbar.style.top = (top) + 'px';
+      toolbar.style.left = (preferredLeft < 8 ? altLeft : preferredLeft) + 'px';
+      toolbar.classList.add('show');
+    }
+    function hideToolbar() { toolbar.classList.remove('show'); }
+
+    // Create left and right description panels
+    const descL = document.createElement('aside');
+    descL.className = 'img-desc img-desc-left';
+    descL.innerHTML = `<button class="close-desc" aria-label="Fermer">×</button><div class="title"></div><div class="body"></div>`;
+    const descR = document.createElement('aside');
+    descR.className = 'img-desc img-desc-right';
+    descR.innerHTML = `<button class="close-desc" aria-label="Fermer">×</button><div class="title"></div><div class="body"></div>`;
+    document.body.appendChild(descL);
+    document.body.appendChild(descR);
+    const descLTitle = descL.querySelector('.title');
+    const descLBody = descL.querySelector('.body');
+    const descLClose = descL.querySelector('.close-desc');
+    const descRTitle = descR.querySelector('.title');
+    const descRBody = descR.querySelector('.body');
+    const descRClose = descR.querySelector('.close-desc');
+
+    // Prefill description panels for slide 3 (index 2) but don't show them unless slide 3 is active
+    (function prefillSlide3Desc(){
+      const s3 = document.querySelector('.slide[data-index="2"]');
+      if (!s3) return;
+      const raw = s3.dataset.desc || '';
+      const left = s3.dataset.descLeft || s3.dataset.descleft || '';
+      const right = s3.dataset.descRight || s3.dataset.descright || '';
+      const title = s3.querySelector('h1')?.textContent?.trim() || '';
+      // fill bodies (allow HTML)
+      descLTitle.textContent = title;
+      descRTitle.textContent = title;
+      descLBody.innerHTML = left || raw || 'Informations horaires.';
+      descRBody.innerHTML = right || '';
+      // do not add 'show' here; visibility managed when slide changes
+    })();
+
+    function splitTextForTwoColumns(text) {
+      if (!text) return ['', ''];
+      const words = text.split(/\s+/);
+      const mid = Math.ceil(words.length / 2);
+      const left = words.slice(0, mid).join(' ');
+      const right = words.slice(mid).join(' ');
+      return [left, right];
+    }
+
+    function showDescFor(img) {
+      const slide = img.closest('.slide');
+      const raw = slide?.dataset?.desc || '';
+      const rawLeft = slide?.dataset?.descLeft || '';
+      const rawRight = slide?.dataset?.descRight || '';
+      let pText = raw;
+      if (!pText) {
+        const p = slide?.querySelector('p');
+        if (p) pText = p.textContent.trim();
+      }
+      const title = slide?.querySelector('h1')?.textContent?.trim() || '';
+
+      // determine left & right text
+      let leftText = rawLeft;
+      let rightText = rawRight;
+      if (!leftText && !rightText) {
+        [leftText, rightText] = splitTextForTwoColumns(pText || '');
+      } else {
+        if (!leftText) leftText = pText || '';
+        if (!rightText) rightText = '';
+      }
+
+      descLTitle.textContent = title;
+      // allow HTML in the data-desc attributes (user-controlled content)
+      descLBody.innerHTML = leftText || 'Aucune description.';
+      descRTitle.textContent = title;
+      descRBody.innerHTML = rightText || 'Aucune description.';
+
+      // show both panels for slide 2 and slide 3 (horaires) or when explicitly requested
+      if (slide?.dataset?.index === '1' || slide?.dataset?.index === '2') {
+        descL.classList.add('show');
+        descR.classList.add('show');
+      } else {
+        // default: show only right panel
+        descL.classList.remove('show');
+        descR.classList.add('show');
+      }
+    }
+
+    function hideDesc() { descL.classList.remove('show'); descR.classList.remove('show'); }
+
+    descLClose.addEventListener('click', (e) => { e.stopPropagation(); hideDesc(); });
+    descRClose.addEventListener('click', (e) => { e.stopPropagation(); hideDesc(); });
+
+    async function downloadImage(img) {
+      try {
+        const resp = await fetch(img.src);
+        const blob = await resp.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        // prefer using file name if available
+        const filename = (img.src.split('/').pop() || 'image') .split('?')[0];
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        alert('Impossible de télécharger l\'image. Ouvre l\'image dans un nouvel onglet puis enregistre-la.');
+      }
+    }
+
+    async function copyImage(img) {
+      try {
+        const resp = await fetch(img.src);
+        const blob = await resp.blob();
+        // try modern Clipboard API
+        if (navigator.clipboard && window.ClipboardItem) {
+          await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
+          alert('Image copiée dans le presse-papiers.');
+        } else {
+          // fallback: open in new tab and ask user to copy manually
+          const url = URL.createObjectURL(blob);
+          window.open(url, '_blank');
+          alert('Le navigateur ne supporte pas la copie directe. L\'image est ouverte dans un nouvel onglet.');
+        }
+      } catch (err) {
+        alert('Impossible de copier l\'image: ' + err.message);
+      }
+    }
+
+    function toggleFullscreenFit(img) {
+      const isOn = img.classList.toggle('fullscreen-fit');
+      if (isOn) {
+        // prevent background scroll while image is centered
+        document.documentElement.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden';
+        showToolbarFor(img);
+        showDescFor(img);
+      } else {
+        document.documentElement.style.overflow = '';
+        document.body.style.overflow = '';
+        hideToolbar();
+        hideDesc();
+      }
+      return isOn;
+    }
+
+    // Reset everything for slide 3 to the initial state (as if never clicked)
+    function resetSlide3State() {
+      // remove fullscreen/zoom classes from all gallery images
+      document.querySelectorAll('.slide[data-index="2"] .gallery img').forEach(i => {
+        i.classList.remove('fullscreen-fit');
+        i.classList.remove('zoomed');
+      });
+      // restore scrolling/overflow
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
+      // ensure chrome is visible again
+      document.body.classList.remove('ui-hidden');
+      // show any dimmed thumbnails
+      document.querySelectorAll('.gallery').forEach(g => g.classList.remove('hidden'));
+      // clear description state and hide panels/toolbar
+      delete descR.dataset.currentImg; delete descL.dataset.currentImg;
+      hideToolbar(); hideDesc();
+    }
+
+    zoomImgs.forEach(img => {
+      // skip generic handlers for gallery images (they have own behaviour)
+      if (img.closest && img.closest('.gallery')) return;
+      img.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        const slideIndex = img.closest('.slide')?.dataset?.index;
+        // If already zoomed/fullscreen, or for slide 2/4 if descriptions are shown for this image, clicking should close
+        if (img.classList.contains('fullscreen-fit') || img.classList.contains('zoomed') || ((slideIndex === '1' || slideIndex === '3') && descR.classList.contains('show') && descR.dataset.currentImg === img.src)) {
+          img.classList.remove('zoomed');
+          img.classList.remove('fullscreen-fit');
+          document.documentElement.style.overflow = '';
+          document.body.style.overflow = '';
+          hideToolbar();
+          hideDesc();
+          delete descR.dataset.currentImg;
+          delete descL.dataset.currentImg;
+          return;
+        }
+
+        if (slideIndex === '1' || slideIndex === '3') {
+          // For slide 2 and slide 4: don't change image size — toggle toolbar + descriptions only
+          if (descR.classList.contains('show') && descR.dataset.currentImg === img.src) {
+            hideDesc(); hideToolbar(); delete descR.dataset.currentImg; delete descL.dataset.currentImg;
+          } else {
+            descR.dataset.currentImg = img.src;
+            descL.dataset.currentImg = img.src;
+            showToolbarFor(img);
+            showDescFor(img);
+          }
+        } else {
+          img.classList.add('zoomed');
+          showToolbarFor(img);
+          // for non-fullscreen images show side description
+          showDescFor(img);
+        }
+      });
+      img.addEventListener('touchstart', (ev) => {
+        ev.stopPropagation();
+        const slideIndex = img.closest('.slide')?.dataset?.index;
+        if (img.classList.contains('fullscreen-fit') || img.classList.contains('zoomed') || ((slideIndex === '1' || slideIndex === '3') && descR.classList.contains('show') && descR.dataset.currentImg === img.src)) {
+          img.classList.remove('zoomed');
+          img.classList.remove('fullscreen-fit');
+          document.documentElement.style.overflow = '';
+          document.body.style.overflow = '';
+          hideToolbar();
+          hideDesc();
+          delete descR.dataset.currentImg;
+          delete descL.dataset.currentImg;
+          return;
+        }
+        if (slideIndex === '1' || slideIndex === '3') {
+          // For slide 2 and slide 4: toggle toolbar + descriptions only
+          if (descR.classList.contains('show') && descR.dataset.currentImg === img.src) {
+            hideDesc(); hideToolbar(); delete descR.dataset.currentImg; delete descL.dataset.currentImg;
+          } else {
+            descR.dataset.currentImg = img.src;
+            descL.dataset.currentImg = img.src;
+            showToolbarFor(img);
+            showDescFor(img);
+          }
+        } else {
+          img.classList.add('zoomed');
+          showToolbarFor(img);
+          showDescFor(img);
+        }
+      });
+      img.addEventListener('keydown', (ev) => {
+        const slideIndex = img.closest('.slide')?.dataset?.index;
+        if (ev.key === 'Enter' || ev.key === ' ') {
+          ev.preventDefault();
+          if (img.classList.contains('fullscreen-fit') || img.classList.contains('zoomed') || ((slideIndex === '1' || slideIndex === '3') && descR.classList.contains('show') && descR.dataset.currentImg === img.src)) {
+            img.classList.remove('zoomed');
+            img.classList.remove('fullscreen-fit');
+            document.documentElement.style.overflow = '';
+            document.body.style.overflow = '';
+            hideToolbar();
+            hideDesc();
+            delete descR.dataset.currentImg;
+            delete descL.dataset.currentImg;
+            return;
+          }
+
+          if (slideIndex === '1' || slideIndex === '3') {
+            // toggle toolbar + descriptions only for slide 2 and slide 4
+            if (descR.classList.contains('show') && descR.dataset.currentImg === img.src) {
+              hideDesc(); hideToolbar(); delete descR.dataset.currentImg; delete descL.dataset.currentImg;
+            } else {
+              descR.dataset.currentImg = img.src;
+              descL.dataset.currentImg = img.src;
+              showToolbarFor(img);
+              showDescFor(img);
+            }
+          } else {
+            img.classList.add('zoomed');
+            showToolbarFor(img);
+            showDescFor(img);
+          }
+        }
+
+        if (ev.key === 'Escape') {
+          img.classList.remove('zoomed');
+          img.classList.remove('fullscreen-fit');
+          document.documentElement.style.overflow = '';
+          document.body.style.overflow = '';
+          hideToolbar();
+          hideDesc();
+        }
+      });
+    });
+
+    // Redéfinir showSlide après la création des panneaux pour gérer leur visibilité
+    function showSlide(i){
+      // basic slide swap
+      slides.forEach((s,idx)=>{ s.classList.toggle('active', idx===i); });
+      index = i;
+      updatePager();
+      const current = slides[i];
+
+      // clear any per-image state so content doesn't leak between slides
+      delete descR.dataset.currentImg;
+      delete descL.dataset.currentImg;
+      hideToolbar();
+      // ensure UI chrome is visible again when switching slides
+      document.body.classList.remove('ui-hidden');
+      document.querySelectorAll('.gallery').forEach(g=>g.classList.remove('hidden'));
+
+      // also make sure any fullscreen-fit/zoom state from slide 3 is cleared
+      document.querySelectorAll('.slide[data-index="2"] .gallery img').forEach(i=>{ i.classList.remove('fullscreen-fit'); i.classList.remove('zoomed'); });
+
+
+      if (current && current.dataset && current.dataset.index === '2') {
+        // populate description panels from the slide's data attributes (avoid leftover from other slides)
+        const left = current.dataset.descLeft || current.dataset.descleft || current.dataset.desc || '';
+        const right = current.dataset.descRight || current.dataset.descright || '';
+        const title = current.querySelector('h1')?.textContent?.trim() || '';
+        descLTitle.textContent = title;
+        descRTitle.textContent = title;
+        descLBody.innerHTML = left || '';
+        descRBody.innerHTML = right || '';
+        descL.classList.add('show');
+        descR.classList.add('show');
+        const firstGalleryImg = current.querySelector('.gallery img');
+        if (firstGalleryImg) {
+          descR.dataset.currentImg = firstGalleryImg.src;
+          descL.dataset.currentImg = firstGalleryImg.src;
+        }
+      } else {
+        hideDesc();
+      }
+    }
+    showSlide(index);
+    const galleryImgs = Array.from(document.querySelectorAll('.gallery img'));
+    galleryImgs.forEach(gimg => {
+      function isInSlide3(img){ return img.closest('.slide')?.dataset?.index === '2'; }
+      gimg.addEventListener('click', (ev) => {
+        if (!isInSlide3(gimg)) return;
+        ev.stopPropagation();
+        if (gimg.classList.contains('fullscreen-fit')) {
+          resetSlide3State();
+        } else {
+          galleryImgs.forEach(i=>{ if (i !== gimg) { i.classList.remove('fullscreen-fit'); } });
+          toggleFullscreenFit(gimg);
+          document.body.classList.add('ui-hidden');
+          hideToolbar(); hideDesc();
+        }
+      });
+
+      gimg.addEventListener('keydown', (ev) => {
+        if (!isInSlide3(gimg)) return;
+        if (ev.key === 'Enter' || ev.key === ' ') {
+          ev.preventDefault();
+          gimg.click();
+        }
+      });
+
+      gimg.addEventListener('touchstart', (ev) => {
+        if (!isInSlide3(gimg)) return;
+        ev.stopPropagation();
+        gimg.click();
+      });
+    });
+    (function(){
+      const slideGallery = document.querySelector('.slide[data-index="2"] .gallery');
+      if (!slideGallery) return;
+      slideGallery.tabIndex = 0;
+      slideGallery.addEventListener('keydown', (e)=>{
+        if (e.key === 'ArrowDown') { e.preventDefault(); slideGallery.scrollBy({ top: 120, behavior:'smooth' }); }
+        if (e.key === 'ArrowUp') { e.preventDefault(); slideGallery.scrollBy({ top: -120, behavior:'smooth' }); }
+        if (e.key === 'PageDown') { e.preventDefault(); slideGallery.scrollBy({ top: Math.round(window.innerHeight*0.45), behavior:'smooth' }); }
+        if (e.key === 'PageUp') { e.preventDefault(); slideGallery.scrollBy({ top: -Math.round(window.innerHeight*0.45), behavior:'smooth' }); }
+      });
+    })();
+    (function(){
+      const slideGallery = document.querySelector('.slide[data-index="2"] .gallery');
+      const bigBtn = document.querySelector('.slide[data-index="2"] .big-scroll');
+      if (!slideGallery || !bigBtn) return;
+      function atBottom() { return slideGallery.scrollTop + slideGallery.clientHeight >= slideGallery.scrollHeight - 6; }
+      function updateIcon(){ bigBtn.textContent = atBottom() ? '⬆' : '⬇'; }
+      bigBtn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        const imgs = Array.from(slideGallery.querySelectorAll('img'));
+        if (!atBottom()) {
+          const current = slideGallery.scrollTop + 2;
+          const next = imgs.find(img => img.offsetTop > current);
+          if (next) {
+            slideGallery.scrollTo({ top: next.offsetTop, behavior: 'smooth' });
+          } else {
+            slideGallery.scrollTo({ top: slideGallery.scrollHeight, behavior: 'smooth' });
+          }
+        } else {
+          slideGallery.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      });
+      slideGallery.addEventListener('scroll', () => { updateIcon(); });
+      setTimeout(updateIcon, 60);
+    })();
+    toolbar.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      const target = ev.target;
+      const visibleImg = document.querySelector('.slide img.zoomed, .slide .slide-img.zoomed, .slide img.fullscreen-fit, .slide .slide-img.fullscreen-fit') || document.querySelector('.lightbox img');
+      if (!visibleImg) return;
+      if (target.id === 'download-img') { downloadImage(visibleImg); }
+      if (target.id === 'copy-img') { copyImage(visibleImg); }
+    });
+    const lightbox = document.createElement('div');
+    lightbox.className = 'lightbox';
+    lightbox.innerHTML = `<div class="frame"><button class="nav prev" aria-label="Précédent">◀</button><img src="" alt="Agrandissement"><button class="nav next" aria-label="Suivant">▶</button><button class="close-lightbox" aria-label="Fermer">×</button></div>`;
+    document.body.appendChild(lightbox);
+    const lbImg = lightbox.querySelector('img');
+    const lbPrev = lightbox.querySelector('.nav.prev');
+    const lbNext = lightbox.querySelector('.nav.next');
+    const lbClose = lightbox.querySelector('.close-lightbox');
+    let lbIndex = -1;
+
+    function openLightbox(idx) {
+      lbIndex = idx;
+      lbImg.src = galleryImgs[lbIndex].src;
+      lbImg.alt = galleryImgs[lbIndex].alt || '';
+      lightbox.classList.add('show');
+      document.documentElement.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden';
+      const gw = galleryImgs[lbIndex].closest('.gallery'); if (gw) gw.classList.add('hidden');
+      showToolbarFor(lbImg);
+      showDescFor(galleryImgs[lbIndex]);
+    }
+    function closeLightbox() {
+      lightbox.classList.remove('show');
+      resetSlide3State();
+    }
+    function showLightboxImage(i) {
+      lbIndex = (i + galleryImgs.length) % galleryImgs.length;
+      lbImg.src = galleryImgs[lbIndex].src;
+      lbImg.alt = galleryImgs[lbIndex].alt || '';
+      descR.dataset.currentImg = lbImg.src; descL.dataset.currentImg = lbImg.src; showDescFor(galleryImgs[lbIndex]);
+      showToolbarFor(lbImg);
+    }
+    lbPrev.addEventListener('click', (e)=>{ e.stopPropagation(); showLightboxImage(lbIndex-1); });
+    lbNext.addEventListener('click', (e)=>{ e.stopPropagation(); showLightboxImage(lbIndex+1); });
+    lbClose.addEventListener('click', (e)=>{ e.stopPropagation(); closeLightbox(); });
+    lightbox.addEventListener('click', (e)=>{ if (e.target === lightbox) closeLightbox(); });
+    document.addEventListener('keydown', (e)=>{
+      if (!lightbox.classList.contains('show')) return;
+      if (e.key === 'ArrowLeft') { showLightboxImage(lbIndex-1); }
+      if (e.key === 'ArrowRight') { showLightboxImage(lbIndex+1); }
+      if (e.key === 'Escape') { closeLightbox(); }
+    });
+    document.addEventListener('click', (ev) => {
+      if (!ev.target.closest('.slide img, .slide .slide-img, .img-toolbar, .img-desc')) {
+        resetSlide3State();
+      }
+    });
+    document.addEventListener('touchstart', (ev) => {
+      if (!ev.target.closest('.slide img, .slide .slide-img, .img-toolbar, .img-desc')) {
+        resetSlide3State();
+      }
+    });
+    document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') { resetSlide3State(); } });
+  })();
+</script>
+</body>
+</html>
